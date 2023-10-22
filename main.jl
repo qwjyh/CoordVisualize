@@ -105,7 +105,22 @@ heatmap!(
 )
 # translate!(fig2.scene, -400, 0, 400)
 for coords in coords_traces
-    scatterlines!(
+    scatter!(
+        ax,
+        coords[:, 1],
+        coords[:, 3],
+        color = get(color_v, coords[:, 2], (hmin, hmax)),
+        markersize = 3,
+        label = "railway",
+        inspector_label = (plot, index, position) -> begin
+            """
+            x: $(coords[index, 1])
+            y: $(coords[index, 2])
+            z: $(coords[index, 3])
+            """
+        end,
+    )
+    lines!(
         ax,
         coords[:, 1],
         coords[:, 3],
@@ -115,7 +130,6 @@ for coords in coords_traces
         # inspector_label = (plot, index, position) -> begin
         #     "($(coords[index, 1]), $(coords[index, 2]), $(coords[index, 3]))"
         # end,
-        inspector_label = (_, _, _) -> "nothing",
     )
     scatterlines!(
         ax3,
