@@ -30,9 +30,11 @@ function parse_log(filepath::AbstractString; interactive=false)::Vector{CoordLog
                 istracing = true
                 coords_trace = Vector{Vector{Float64}}(undef, 0) # SVector ?
                 log_date = try
-                    s = match(r"\".+\"").match
-                    parse(DateTime, s[2:end-1])
+                    s = match(r"\".+\"", l)
+                    @debug s
+                    parse(DateTime, s.match[2:end-1])
                 catch e
+                    @debug l
                     @error "Failed to parse date at line $(i), file $(filepath)"
                     DateTime(0)
                 end
