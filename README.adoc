@@ -1,6 +1,20 @@
 = CoordVisualize
 
-== Parsing log, taggin and exporting
+== Parsing log, tagging and exporting
+* Parse coordinates log from traceroot CSM(Client Side Mod) for minetest.
+* Edit log
+** Split log
+** Adding notes for logs
+* Printing to text file.
+** Or JLD2?
 
 == Reading data & Visualization, inspecting
+* Importing data from exported text file
+* Visualize with GLMakie (or CairoMakie)
+** Inspecting with GUI
+
+== TODO
+- [ ] Printing
+- [ ] visualize
+- [ ] doc
 
