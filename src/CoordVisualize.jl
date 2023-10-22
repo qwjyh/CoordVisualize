@@ -4,5 +4,6 @@ using Dates
 
 include("typedef.jl")
 include("parser.jl")
+include("edit.jl")
 
-end # end module CoordVisualize
+end # module CoordVisualize
