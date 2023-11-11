@@ -85,8 +85,4 @@ function parse_log(filepaths::Vector{T}; interactive=false)::Vector{CoordLog} wh
         parse_log(filepath; interactive=interactive)
     end |> Iterators.flatten |> collect
 end
-CoordLog(
-    [1.0 2.0 3.0; 4.0 5.0 6.0],
-    Dates.now(),
-    "a"
-)
+

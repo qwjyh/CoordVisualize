@@ -1,17 +1,17 @@
 """
     split_log(log::CoordLog, at::Unsigned, notes_1::AbstractString, notes_2::AbstractString)::Vector{CoordLog}
 
-Split `log` at `at`, i.e. to `1:at` and `at:end` then assign `notes_1` and `notes_2` to notes for each other.
+Split `log` at `at`, i.e. to `1:at` and `(at + 1):end` then assign `notes_1` and `notes_2` to notes for each other.
 """
-function split_log(log::CoordLog, at::Unsigned, notes_1::AbstractString, notes_2::AbstractString)::Vector{CoordLog}
+function split_log(log::CoordLog, at::Unsigned, notes_1::AbstractString, notes_2::AbstractString)::Tuple{CoordLog, CoordLog}
     @assert at < size(log.coords)[1] "Split index must be less than original log length($(size(log.coords)[1]))"
-    [
+    (
         CoordLog(log.coords[1:at, :], log.logdate, notes_1),
-        CoordLog(log.coords[at:end, :], log.logdate, notes_2),
-    ]
+        CoordLog(log.coords[(at + 1):end, :], log.logdate, notes_2),
+    )
 end
 
-function split_log(log::CoordLog, at::Integer, notes_1::AbstractString, notes_2::AbstractString)::Vector{CoordLog}
+function split_log(log::CoordLog, at::Integer, notes_1::AbstractString, notes_2::AbstractString)::Tuple{CoordLog, CoordLog}
     split_log(log, UInt(at), notes_1, notes_2)
 end
 
