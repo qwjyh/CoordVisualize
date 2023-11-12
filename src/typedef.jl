@@ -1,4 +1,7 @@
 using Dates
+"""
+Stores a set of logs with its taken date datetime and supplemental note.
+"""
 mutable struct CoordLog{T <: AbstractFloat}
     coords::Matrix{T}
     logdate::DateTime
