@@ -25,3 +25,7 @@ You sometimes want to split logs and to give more appropriate notes for each of 
 You can do this with [`split_log`](@ref) function.
 
 You can also edit existing notes with [`assign_note!`](@ref).
+
+### Exporting
+Use [`export_log`](@ref) to export log to `io` or `file`.
+
