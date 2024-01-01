@@ -29,3 +29,5 @@ You can also edit existing notes with [`assign_note!`](@ref).
 ### Exporting
 Use [`export_log`](@ref) to export log to `io` or `file`.
 
+### Importing
+Do `using Dates` first and just `include("filename")` and it will return `Vector{CoordLog}`.

@@ -14,7 +14,8 @@
 ** Inspecting with GUI
 
 == TODO
-- [ ] Printing
+- [x] Printing
 - [ ] visualize
+- [ ] interactive edit
 - [ ] doc
 

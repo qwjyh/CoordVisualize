@@ -18,11 +18,17 @@ function export_log(logs::Vector{CoordLog})
         (s -> "[\n" * s * "\n]")
 end
 
-function export_log(io::IO, log::CoordLog)
+"""
+    export_log(io::IO, log)
+"""
+function export_log(io::IO, log)
     write(io, export_log(log))
 end
 
-function export_log(file::AbstractString, log::CoordLog)
+"""
+    export_log(file::AbstractString, log)
+"""
+function export_log(file::AbstractString, log)
     open(file, "w") do f
         export_log(f, log)
     end
