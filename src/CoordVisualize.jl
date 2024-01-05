@@ -8,5 +8,6 @@ include("typedef.jl")
 include("parser.jl")
 include("edit.jl")
 include("print.jl")
+include("visualize.jl")
 
 end # module CoordVisualize
