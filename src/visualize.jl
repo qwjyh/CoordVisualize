@@ -107,7 +107,6 @@ TODO
         marker = theme(scene, :marker),
         markercolormap = theme(scene, :colormap),
         markersize = theme(scene, :markersize),
-        strokecolor = theme(scene, :strokecolor),
         strokewidth = theme(scene, :strokewidth),
         linecolormap = theme(scene, :colormap),
         linestyle = theme(scene, :linestyle),
@@ -127,6 +126,7 @@ function Makie.plot!(tr2d::Trace2Ds)
 
     ntraces = length(tr2d.log[]) # number of CoordLog
     linesegs = Observable(Point2f[])
+    points = Observable(Point2f[])
     notes = Observable(String[])
     if tr2d.markercolormap[] isa Symbol
         tr2d.markercolormap[] = getproperty(ColorSchemes, tr2d.markercolormap[])
@@ -137,10 +137,6 @@ function Makie.plot!(tr2d::Trace2Ds)
     end
     # @info "lcolormapfunc" lcolormapfunc
     linecolors = Observable(lcolormapfunc[](tr2d.linecolormap[], tr2d.log[]))
-    on(linecolors) do lc
-        @info "linecolors update"
-    end
-    @info "linecolors" linecolors
 
     # helper function which mutates observables
     function update_plot(
@@ -151,18 +147,13 @@ function Makie.plot!(tr2d::Trace2Ds)
         mcolormapfunc,
     )
         @info "update_plot"
+        markercolors[]
         linecolors[]
         # @info "logs on update_plot" logs
         # init
         empty!(linesegs[])
-        if !isnothing(mcolormapfunc)
-            # if markercolors[] isa AbstractVector
-            #     empty!(markercolors[])
-            # else
-            #     markercolors[] = []
-            # end
-            markercolors[] = mcolormapfunc(mcolormap, logs)
-        end
+        empty!(points[])
+        empty!(markercolors[])
         if linecolors[] isa AbstractVector
             empty!(linecolors[])
         else
@@ -170,15 +161,17 @@ function Makie.plot!(tr2d::Trace2Ds)
         end
 
         # update
-        linecolors_count = 1
+        colors_count = 1
         for (i, log) in enumerate(logs)
             first = true
             for point in eachrow(log.coords)
                 push!(linesegs[], Point2f(point[1], point[3]))
                 push!(linesegs[], Point2f(point[1], point[3]))
-                push!(linecolors[], lcolormapfunc(lcolormap, logs)[linecolors_count])
-                push!(linecolors[], lcolormapfunc(lcolormap, logs)[linecolors_count])
-                linecolors_count += 1
+                push!(points[], Point2f(point[1], point[3]))
+                push!(linecolors[], lcolormapfunc(lcolormap, logs)[colors_count])
+                push!(linecolors[], lcolormapfunc(lcolormap, logs)[colors_count])
+                push!(markercolors[], mcolormapfunc(mcolormap, logs)[colors_count])
+                colors_count += 1
 
                 # # marker
                 # if !isnothing(mcolormapfunc)
@@ -201,6 +194,7 @@ function Makie.plot!(tr2d::Trace2Ds)
             push!(notes[], log.note)
         end
 
+        markercolors[] = markercolors[]
         linecolors[] = linecolors[]
     end
 
@@ -212,7 +206,6 @@ function Makie.plot!(tr2d::Trace2Ds)
         lcolormapfunc,
         tr2d.mcolormapfunc,
     )
-    @info "tr2d" lcolormapfunc
 
     # init
     update_plot(
@@ -229,6 +222,13 @@ function Makie.plot!(tr2d::Trace2Ds)
         color = linecolors,
         linewidth = tr2d.linewidth,
         linestyle = tr2d.linestyle,
+    )
+    scatter!(
+        tr2d,
+        points,
+        color = markercolors,
+        markersize = tr2d.markersize,
+        strokewidth = tr2d.strokewidth,
     )
     # @info "dump" dump(tr2d, maxdepth = 1)
     # @info "attributes" dump(tr2d.attributes, maxdepth = 3)
