@@ -11,10 +11,10 @@ If keyword argument `interactive` is set to `true`, prompts will be shown to
 receive custom notes for each `CoordLog`.
 Otherwise the note is set to ""(empty string).
 """
-function parse_log(filepath::AbstractString; interactive=false)::Vector{CoordLog}
+function parse_log(filepath::AbstractString; interactive=false)::Vector{CoordLog{Float64}}
     istracing::Bool = false
     coords_trace = Vector{Vector{Float64}}(undef, 0) # SVector ?
-    ret = Vector{CoordLog}()
+    ret = Vector{CoordLog{Float64}}()
     log_date = DateTime(0)
     for (i, l) in enumerate(readlines(filepath))
         # skip logs not from tracecoord
