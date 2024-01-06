@@ -106,7 +106,7 @@ fig[1:2, 2] = grid!(
     width = options_width,
 )
 
-tlog = vcat(CoordVisualize.parse_log.(["coord_log_5.txt", "coord_log_6.txt"])...)
+# tlog = vcat(CoordVisualize.parse_log.(["coord_log_5.txt", "coord_log_6.txt"])...)
 
 # Main
 heatmap!(

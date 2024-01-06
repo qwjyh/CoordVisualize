@@ -9,6 +9,40 @@ Documentation for CoordVisualize.jl
 ## Tutorial
 Readers are expected to be familiar with basics of julia.
 
+### Preparing
+This will take a few minutes.
+
+```juliarepl
+julia> # type ]
+
+(@v1.10) Pkg> activate .
+
+(CoordVisualize) Pkg> instantiate
+```
+
+### Parse log
+```juliarepl
+julia> using CoordVisualize
+
+julia> interactive_edit_log("coord_log_1.txt", "coord_log_2.txt")
+...
+  Follow the instruction
+...
+```
+
+### CoordVisualize
+Get map image file and place it as "map.png".
+
+```juliarepl
+julia> using GLMakie, CoordVisualize
+
+julia> tlog = include("<exported log file>");
+
+julia> include("<path to root>/interactive_viz.jl")
+```
+
+## Low level
+
 ### Log structure
 CoordVisualize.jl treats coordination trace log with some additional information,
 datetime when log was taken and supplemental note to annotate the log.
