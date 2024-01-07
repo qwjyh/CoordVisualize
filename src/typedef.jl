@@ -21,3 +21,7 @@ end
 Base.:(==)(x::CoordLog, y::CoordLog) = begin
     x.note == y.note && x.logdate == y.logdate && x.coords == y.coords
 end
+
+function Base.getindex(log::CoordLog{T}, i) where {T}
+    log.coords[i, :]
+end

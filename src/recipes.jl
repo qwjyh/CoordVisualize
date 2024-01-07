@@ -142,6 +142,7 @@ function Makie.plot!(tr2d::Trace2Ds)
     linesegs = Observable(Point2f[])
     points = Observable(Point2f[])
     altitudes = Observable(Float64[])
+    point_ids = Observable(Tuple{Int64, Int64}[])
     notes = Observable(String[])
     if tr2d.markercolormap[] isa Symbol
         tr2d.markercolormap[] = getproperty(ColorSchemes, tr2d.markercolormap[])
@@ -174,6 +175,7 @@ function Makie.plot!(tr2d::Trace2Ds)
         empty!(linesegs[])
         empty!(points[])
         empty!(altitudes[])
+        empty!(point_ids[])
         empty!(markercolors[])
         if linecolors[] isa AbstractVector
             empty!(linecolors[])
@@ -187,11 +189,12 @@ function Makie.plot!(tr2d::Trace2Ds)
         mcolors, mticks[] = mcolormapfunc(mcolormap, logs, tr2d.nmcolorticks[])
         for (i, log) in enumerate(logs)
             first = true
-            for point in eachrow(log.coords)
+            for (j, point) in enumerate(eachrow(log.coords))
                 push!(linesegs[], Point2f(point[1], point[3]))
                 push!(linesegs[], Point2f(point[1], point[3]))
                 push!(points[], Point2f(point[1], point[3]))
                 push!(altitudes[], point[2])
+                push!(point_ids[], (i, j))
                 push!(linecolors[], lcolors[colors_count])
                 push!(linecolors[], lcolors[colors_count])
                 push!(markercolors[], mcolors[colors_count])
@@ -256,6 +259,16 @@ function Makie.plot!(tr2d::Trace2Ds)
         markersize = tr2d.markersize,
         strokewidth = tr2d.strokewidth,
         visible = tr2d.showmarker,
+        inspector_label = (self, i, pos) -> begin
+            logid, pointid = point_ids[][i]
+            """
+            log: $(logid), point: $(pointid)
+            x: $(lpad(round(pos[1], digits = 1), 7))
+            y: $(lpad(round(altitudes[][i], digits = 1), 7))
+            z: $(lpad(round(pos[2], digits = 1), 7))
+            $(tr2d.log[][logid].note)
+            """
+        end,
     )
     # @info "dump" dump(tr2d, maxdepth = 1)
     # @info "attributes" dump(tr2d.attributes, maxdepth = 3)

@@ -3,7 +3,9 @@ module CoordVisualize
 using Dates
 
 export CoordLog
-export interactive_edit_log
+export iedit_log
+export isplit_log!, iedit_note!, ijoin_logs!
+export export_log
 export ColorMapFuncs
 
 include("typedef.jl")

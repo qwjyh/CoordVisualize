@@ -11,11 +11,18 @@ function export_log(log::CoordLog)
     )"""
 end
 
-function export_log(logs::Vector{CoordLog})
+function export_log(logs::Vector{CoordLog{T}}) where {T}
     logs .|>
         export_log |>
         (vs -> join(vs, ",\n")) |>
         (s -> "[\n" * s * "\n]")
+end
+
+function export_log(logs::Vector{CoordLog{T}}, filename::AbstractString) where {T}
+    open(filename, "w") do f
+        println(f, "using Dates")
+        println(f, export_log(logs))
+    end
 end
 
 """

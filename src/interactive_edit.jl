@@ -2,7 +2,7 @@ using Statistics
 using Dates
 using Printf
 
-function interactive_edit_log(filenames...; writetofile = true)
+function iedit_log(filenames...; writetofile = true)
     printstyled(stdout, "[CoordLog Editor] \n", color = :blue, bold = true)
     logs = CoordLog[]
     printstyled(stdout, "loading log files\n", color = :blue)
@@ -10,7 +10,7 @@ function interactive_edit_log(filenames...; writetofile = true)
         append!(logs, parse_log(file))
     end
     printstyled(stdout, "all files loaded\n", color = :blue)
-    edited_logs = CoordLog[]
+    edited_logs = CoordLog{Float64}[]
     for (i, log) in enumerate(logs)
         printstyled(stdout, "LogEdit: editing log $(i) / $(length(logs))\n", color = :blue)
         printstyled(stdout, "summary\n", color = :cyan)
@@ -60,14 +60,16 @@ function interactive_edit_log(filenames...; writetofile = true)
                 note_1 = readline(stdin)
                 new_log, log = split_log(log, at, note_1, "")
                 push!(edited_logs, new_log)
-                print("""
-                      summary of the remaining log:
-                        mean            : $(mean(eachrow(log.coords)) .|> round |> Tuple)
-                        start           : $(log.coords[1, :] .|> round |> Tuple)
-                        end             : $(log.coords[end, :] .|> round |> Tuple)
-                        datetime        : $(Dates.format(log.logdate, DateFormat("yyyy-mm-dd HH:MM:SS")))
-                        number of coords: $(size(log.coords)[1])
-                      """)
+                print(
+                    """
+                    summary of the remaining log:
+                      mean            : $(mean(eachrow(log.coords)) .|> round |> Tuple)
+                      start           : $(log.coords[1, :] .|> round |> Tuple)
+                      end             : $(log.coords[end, :] .|> round |> Tuple)
+                      datetime        : $(Dates.format(log.logdate, DateFormat("yyyy-mm-dd HH:MM:SS")))
+                      number of coords: $(size(log.coords)[1])
+                    """,
+                )
                 @goto ask
             end
         elseif ans == "n" || ans == "N" || ans == ""
@@ -98,7 +100,10 @@ function interactive_edit_log(filenames...; writetofile = true)
             ans = readline()
             if ans == "y" || ans == "Y"
             elseif ans == "n" || ans == "N" || ans == ""
-                printstyled("Skip exporting to a file. Please export the returned log manually.\n", color = :magenta)
+                printstyled(
+                    "Skip exporting to a file. Please export the returned log manually.\n",
+                    color = :magenta,
+                )
                 @goto finish
             end
         end
@@ -111,4 +116,56 @@ function interactive_edit_log(filenames...; writetofile = true)
     @label finish
     printstyled("Edit completed.\n", color = :blue, bold = true)
     return edited_logs
+end
+
+function isplit_log!(
+    logs::AbstractVector{CoordLog{T}},
+    logid::Integer,
+    pointid::Integer,
+) where {T}
+    1 ≤ logid ≤ length(logs) ||
+        throw(ArgumentError("logid out of index: ¬ 1 ≤ $(logid) ≤ $(length(logid))"))
+    if !(1 < pointid < n_coords(logs[logid]))
+        throw(
+            ArgumentError(
+                "pointid($(pointid)) out of index: min=2, max=$(n_coords(logs[logid]) - 1)",
+            ),
+        )
+    end
+
+    log = popat!(logs, logid)
+    printstyled("note for the first log: ", color = :green, italic = true)
+    note_1 = readline()
+    printstyled("note for the second log: ", color = :green, italic = true)
+    note_2 = readline()
+    new_logs = split_log(log, pointid, note_1, note_2)
+    insert!(logs, logid, new_logs[1])
+    insert!(logs, logid + 1, new_logs[2])
+end
+
+function iedit_note!(logs::AbstractVector{CoordLog{T}}, logid::Integer) where {T}
+    1 ≤ logid ≤ length(logs) ||
+        throw(ArgumentError("logid out of index: ¬ 1 ≤ $(logid) ≤ $(length(logid))"))
+    printstyled("new note for the log: ", color = :green, italic = true)
+    note = readline()
+    logs[logid].note = note
+end
+
+function ijoin_logs!(logs::AbstractVector{CoordLog{T}}, logid1::Integer, logid2::Integer) where {T}
+    1 ≤ logid1 ≤ length(logs) ||
+        throw(ArgumentError("logid1 out of index: ¬ 1 ≤ $(logid1) ≤ $(length(logid1))"))
+    1 ≤ logid2 ≤ length(logs) ||
+        throw(ArgumentError("logid2 out of index: ¬ 1 ≤ $(logid2) ≤ $(length(logid2))"))
+    logid1 == logid2 && throw(ArgumentError("logid1 and logid2 cannot be the same"))
+    if logid1 > logid2
+        logid1, logid2 = logid2, logid1
+    end
+    
+    log_1 = popat!(logs, logid1)
+    log_2 = popat!(logs, logid2 - 1)
+    
+    printstyled("note for the new log: ", color = :green, italic = true)
+    note = readline()
+    log = join_log(log_1, log_2, note)
+    insert!(logs, logid1, log)
 end
