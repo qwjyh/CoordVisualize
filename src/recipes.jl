@@ -4,16 +4,29 @@ using ColorSchemes
 
 """
 Predefined color map functions.
+Receives
+- `cmap`: colormap
+- `logs`: vector of `CoordLog`
+- `n`: number of returning ticks
+
+and returns tuple of
+1. vector of `Colorant`
+2. ticks to pass to `Colorbar`, which is a Tuple of
+    1. vector of tick location (0 to 1)
+    2. vector of tick labels (strings)
+
+Any function (or struct) which behaves like this can be used for 
+`lcolormapfunc` and `mcolormapfunc` kwargs of `trace2ds`.
 
 # Types
 
-[`ColorMapFunc`](@ref)
+[`ColorMapFunc`](@ref) is a supertype of all of these.
 
 # Interface
 
 Define these methods for the ColorMapFunc.
 
-    (AbstractVector{CoordLog}) -> Vector{∈ [0, 1]}, ticks
+    (cmap, logs, n) -> Vector{Colorant}, ticks
 """
 module ColorMapFuncs
 
@@ -26,7 +39,8 @@ using Makie: wong_colors, Scene
 # Methods
     (f::ColorMapFunc)(cmap, logs)
 
-Helper method.
+Helper struct for those use vector of 0 to 1 floats.
+Example functions are [`Date`](@ref) and [`Altitude`](@ref).
 """
 abstract type ColorMapFunc end
 

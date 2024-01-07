@@ -13,6 +13,21 @@
 * Visualize with GLMakie (or CairoMakie)
 ** Inspecting with GUI
 
+== Docs
+Clone this repo, and
+```sh
+$ cd docs
+
+$ julia --project -e 'using Pkg; Pkg.instantiate()'
+
+$ julia --project make.jl
+
+$ cd build
+
+$ python -m http.server --bind localhost
+
+```
+
 == TODO
 - [x] Printing
 - [ ] visualize

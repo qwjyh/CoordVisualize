@@ -6,3 +6,9 @@
 ```@autodocs
 Modules = [CoordVisualize]
 ```
+
+# ColorMapFuncs
+
+```@autodocs
+Modules = [CoordVisualize.ColorMapFuncs]
+```

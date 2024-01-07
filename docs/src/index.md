@@ -12,7 +12,7 @@ Readers are expected to be familiar with basics of julia.
 ### Preparing
 This will take a few minutes.
 
-```juliarepl
+```julia-repl
 julia> # type ]
 
 (@v1.10) Pkg> activate .
@@ -21,24 +21,52 @@ julia> # type ]
 ```
 
 ### Parse log
-```juliarepl
+```julia-repl
 julia> using CoordVisualize
 
-julia> interactive_edit_log("coord_log_1.txt", "coord_log_2.txt")
+julia> iedit_log("coord_log_1.txt", "coord_log_2.txt")
 ...
   Follow the instruction
 ...
 ```
 
-### CoordVisualize
-Get map image file and place it as "map.png".
+### Visualize the log
+Get map image file and place it as "map.png" beforehand.
 
-```juliarepl
+```julia-repl
 julia> using GLMakie, CoordVisualize
 
-julia> tlog = include("<exported log file>");
+julia> tlog = Observable(include("<exported log file>"))
+...
+
+julia> # or
+
+julia> tlog = Observable(interactive_edit_log("log files", "log file2"))
+...
 
 julia> include("<path to root>/interactive_viz.jl")
+...
+```
+
+Available colorschemes at https://juliagraphics.github.io/ColorSchemes.jl/stable/catalogue/ .
+Available colors at https://juliagraphics.github.io/Colors.jl/stable/constructionandconversion/#Color-Parsing and https://juliagraphics.github.io/Colors.jl/stable/namedcolors/ .
+
+### Edit the log
+```julia-repl
+julia> isplit_log!(tlog[], 3, 30)
+... <with some prompts>
+
+julia> iedit_note!(tlog[], 3)
+... <with some promots>
+
+julia> ijoin_logs!(tlog[], 5, 7)
+... <with some prompts>
+
+```
+
+### Export the log
+```julia-repl
+julia> export_log(tlog[], "<filename>")
 ```
 
 ## Low level

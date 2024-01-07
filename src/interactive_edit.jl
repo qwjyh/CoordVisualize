@@ -2,6 +2,9 @@ using Statistics
 using Dates
 using Printf
 
+"""
+Interactively parse log files and edit the log.
+"""
 function iedit_log(filenames...; writetofile = true)
     printstyled(stdout, "[CoordLog Editor] \n", color = :blue, bold = true)
     logs = CoordLog[]
@@ -118,6 +121,15 @@ function iedit_log(filenames...; writetofile = true)
     return edited_logs
 end
 
+"""
+    isplit_log!(
+        logs::AbstractVector{CoordLog{T}},
+        logid::Integer,
+        pointid::Integer,
+    ) where {T}
+
+Split the log. Supply notes interactively.
+"""
 function isplit_log!(
     logs::AbstractVector{CoordLog{T}},
     logid::Integer,
@@ -143,6 +155,11 @@ function isplit_log!(
     insert!(logs, logid + 1, new_logs[2])
 end
 
+"""
+    iedit_note!(logs::AbstractVector{CoordLog{T}}, logid::Integer) where {T}
+
+Edit the note at `logid`. Supply new note interactively.
+"""
 function iedit_note!(logs::AbstractVector{CoordLog{T}}, logid::Integer) where {T}
     1 ≤ logid ≤ length(logs) ||
         throw(ArgumentError("logid out of index: ¬ 1 ≤ $(logid) ≤ $(length(logid))"))
@@ -151,6 +168,11 @@ function iedit_note!(logs::AbstractVector{CoordLog{T}}, logid::Integer) where {T
     logs[logid].note = note
 end
 
+"""
+    ijoin_logs!(logs::AbstractVector{CoordLog{T}}, logid1::Integer, logid2::Integer) where {T}
+
+Join the logs at `logid1` and `logid2`. Supply new note interactively.
+"""
 function ijoin_logs!(logs::AbstractVector{CoordLog{T}}, logid1::Integer, logid2::Integer) where {T}
     1 ≤ logid1 ≤ length(logs) ||
         throw(ArgumentError("logid1 out of index: ¬ 1 ≤ $(logid1) ≤ $(length(logid1))"))

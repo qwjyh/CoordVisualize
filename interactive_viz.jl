@@ -94,7 +94,7 @@ inspector_options = grid!(
     [1, 2] => toggle_inspector,
     width = options_width,
 )
-fig[1:2, 2] = grid!(
+fig[1:2, 3] = grid!(
     [0, :] => Label(fig, "Line", font = :bold),
     [1, :] => line_options,
     [2, :] => Label(fig, "Marker", font = :bold),
@@ -143,7 +143,7 @@ cbm = Colorbar(
     ticklabelsize = 10,
     label = menu_mcolormapfunc.selection,
 )
-fig[1:2, 3] = grid!(
+fig[1:2, 2] = grid!(
     [0, 1] => Label(fig, "line", font = :bold),
     [1, 1] => cbl,
     [2, 1] => Label(fig, "marker", font = :bold),
